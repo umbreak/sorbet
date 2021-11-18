@@ -79,6 +79,7 @@ const vector<PrintOptions> print_options({
     {"autogen-subclasses", &Printers::AutogenSubclasses},
     {"package-tree", &Printers::Packager, false},
     {"minimized-rbi", &Printers::MinimizeRBI},
+    {"dsl-analysis", &Printers::DSLAnalysis, true},
 });
 
 PrinterConfig::PrinterConfig() : state(make_shared<GuardedState>()){};
@@ -148,6 +149,7 @@ vector<reference_wrapper<PrinterConfig>> Printers::printers() {
         AutogenClasslist,
         AutogenAutoloader,
         AutogenSubclasses,
+        DSLAnalysis,
         Packager,
         MinimizeRBI,
     });
@@ -155,7 +157,7 @@ vector<reference_wrapper<PrinterConfig>> Printers::printers() {
 
 bool Printers::isAutogen() const {
     return Autogen.enabled || AutogenMsgPack.enabled || AutogenClasslist.enabled || AutogenSubclasses.enabled ||
-           AutogenAutoloader.enabled;
+           AutogenAutoloader.enabled || DSLAnalysis.enabled;
 }
 
 struct StopAfterOptions {
