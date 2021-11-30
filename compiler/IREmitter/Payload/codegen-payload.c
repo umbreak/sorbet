@@ -178,6 +178,7 @@ SORBET_ALIVE(VALUE, sorbet_vm_instance_variable_set,
 SORBET_ALIVE(VALUE, sorbet_vm_class, (struct FunctionInlineCache * classCache, rb_control_frame_t *cfp, VALUE recv));
 SORBET_ALIVE(VALUE, sorbet_vm_isa_p,
              (struct FunctionInlineCache * classCache, rb_control_frame_t *cfp, VALUE recv, VALUE klass));
+SORBET_ALIVE(VALUE, sorbet_vm_freeze, (struct FunctionInlineCache * classCache, rb_control_frame_t *cfp, VALUE recv));
 
 SORBET_ALIVE(VALUE, rb_hash_keys, (VALUE recv));
 SORBET_ALIVE(VALUE, rb_hash_values, (VALUE recv));
@@ -625,6 +626,16 @@ double sorbet_rubyValueToDouble(VALUE val) {
 SORBET_INLINE
 VALUE sorbet_doubleToRubyValue(double u) {
     return DBL2NUM(u);
+}
+
+// ****
+// ****                       Kernel operations
+// ****
+
+SORBET_INLINE
+VALUE sorbet_rb_freeze(struct FunctionInlineCache *cache, rb_control_frame_t *cfp, VALUE recv) {
+    extern VALUE rb_freeze();
+    return rb_freeze(recv);
 }
 
 // ****
