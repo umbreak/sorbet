@@ -394,32 +394,9 @@ void runAutogen(const core::GlobalState &gs, options::Options &opts, const autog
         const auto &processedGlobalDSLInfo = autogen::mergeAndFilterGlobalDSLInfo(gs, std::move(globalDSLInfo));
         fmt::memory_buffer out;
 
-        int totalMutators = 0;
-        int problemMutators = 0;
         for (const auto &it : processedGlobalDSLInfo) {
-            if (it.second.model.empty() || it.second.props.empty()) {
-                continue;
-            }
-
-            totalMutators++;
-
-            if (it.second.problemLocs.empty()) {
-                continue;
-            }
-
-            problemMutators++;
-        }
-
-        fmt::format_to(std::back_inserter(out), "Number of mutators analyzed: {}\n", totalMutators);
-        fmt::format_to(std::back_inserter(out), "Number of mutators with problems: {}\n\n", problemMutators);
-
-        for (const auto &it : processedGlobalDSLInfo) {
-            if (it.second.model.empty() || it.second.props.empty()) {
-                continue;
-            }
-            fmt::format_to(std::back_inserter(out), "{}\n", "[mutator=");
             autogen::printName(out, it.first, gs);
-            fmt::format_to(std::back_inserter(out), "{}\n", "]");
+            fmt::format_to(std::back_inserter(out), "{}\n", ":");
             it.second.formatString(out, gs);
         }
 
