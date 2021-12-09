@@ -18,7 +18,7 @@ void TypeConstraint::defineDomain(const GlobalState &gs, const InlinedVector<Typ
         auto typ = cast_type<TypeVar>(ta.data(gs)->resultType);
         ENFORCE(typ != nullptr);
 
-        if (ta.data(gs)->isCovariant()) {
+        if (ta.data(gs)->flags.isCovariant) {
             findLowerBound(typ->sym) = Types::bottom();
         } else {
             findUpperBound(typ->sym) = Types::top();
