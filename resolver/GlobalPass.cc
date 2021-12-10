@@ -143,7 +143,7 @@ void resolveTypeMembers(core::GlobalState &gs, core::ClassOrModuleRef sym,
         }
     }
 
-    if (sym.data(gs)->isClassOrModuleClass()) {
+    if (sym.data(gs)->isClass()) {
         for (core::SymbolRef tp : sym.data(gs)->typeMembers()) {
             auto tm = tp.asTypeMemberRef();
             // AttachedClass is covariant, but not controlled by the user.
@@ -210,7 +210,7 @@ void Resolver::finalizeAncestors(core::GlobalState &gs) {
         }
         auto loc = ref.data(gs)->loc();
         if (loc.file().exists() && loc.file().data(gs).sourceType == core::File::Type::Normal) {
-            if (ref.data(gs)->isClassOrModuleClass()) {
+            if (ref.data(gs)->isClass()) {
                 classCount++;
             } else {
                 moduleCount++;
@@ -241,7 +241,7 @@ void Resolver::finalizeAncestors(core::GlobalState &gs) {
                 ref.data(gs)->setSuperClass(singleton);
             }
         } else {
-            if (ref.data(gs)->isClassOrModuleClass()) {
+            if (ref.data(gs)->isClass()) {
                 if (!core::Symbols::Object().data(gs)->derivesFrom(gs, ref) && core::Symbols::Object() != ref) {
                     ref.data(gs)->setSuperClass(core::Symbols::Object());
                 }
@@ -295,7 +295,7 @@ int maybeAddMixin(core::GlobalState &gs, core::ClassOrModuleRef forSym,
 ParentLinearizationInformation computeClassLinearization(core::GlobalState &gs, core::ClassOrModuleRef ofClass) {
     ENFORCE_NO_TIMER(ofClass.exists());
     auto data = ofClass.data(gs);
-    if (!data->isClassOrModuleLinearizationComputed()) {
+    if (!data->flags.isLinearizationComputed) {
         if (data->superClass().exists()) {
             computeClassLinearization(gs, data->superClass());
         }
@@ -313,7 +313,7 @@ ParentLinearizationInformation computeClassLinearization(core::GlobalState &gs, 
             }
             ParentLinearizationInformation mixinLinearization = computeClassLinearization(gs, mixin);
 
-            if (!mixin.data(gs)->isClassOrModuleModule()) {
+            if (!mixin.data(gs)->isModule()) {
                 // insert all transitive parents of class to bring methods back.
                 auto allMixins = mixinLinearization.fullLinearizationSlow(gs);
                 newMixins.insert(newMixins.begin(), allMixins.begin(), allMixins.end());
@@ -326,7 +326,7 @@ ParentLinearizationInformation computeClassLinearization(core::GlobalState &gs, 
             }
         }
         data->mixins() = std::move(newMixins);
-        data->setClassOrModuleLinearizationComputed();
+        data->flags.isLinearizationComputed = true;
         if (debug_mode) {
             for (auto oldMixin : currentMixins) {
                 ENFORCE(ofClass.data(gs)->derivesFrom(gs, oldMixin), "{} no longer derives from {}",
@@ -334,7 +334,7 @@ ParentLinearizationInformation computeClassLinearization(core::GlobalState &gs, 
             }
         }
     }
-    ENFORCE_NO_TIMER(data->isClassOrModuleLinearizationComputed());
+    ENFORCE_NO_TIMER(data->flags.isLinearizationComputed);
     return ParentLinearizationInformation{data->mixins(), data->superClass(), ofClass};
 }
 
@@ -345,7 +345,7 @@ void fullLinearizationSlowImpl(core::GlobalState &gs, const ParentLinearizationI
 
     for (auto m : info.mixins) {
         if (!absl::c_linear_search(acc, m)) {
-            if (m.data(gs)->isClassOrModuleModule()) {
+            if (m.data(gs)->isModule()) {
                 acc.emplace_back(m);
             } else {
                 fullLinearizationSlowImpl(gs, computeClassLinearization(gs, m), acc);
