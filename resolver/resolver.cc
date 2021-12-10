@@ -820,7 +820,7 @@ private:
                 enclosingTypeMember = typeMembers[0];
                 break;
             }
-            enclosingClass = enclosingClass.data(ctx)->owner.enclosingClass(ctx);
+            enclosingClass = enclosingClass.data(ctx)->owner;
         }
         auto &rhs = *job.rhs;
         if (enclosingTypeMember.exists()) {
