@@ -3686,6 +3686,44 @@ end
 class OpenSSL::Digest::DigestError < OpenSSL::OpenSSLError
 end
 
+module OpenSSL::KDF
+  sig do
+    params(
+      pass: String,
+      salt: String,
+      iterations: Integer,
+      length: Integer,
+      hash: T.any(String, OpenSSL::Digest)
+    )
+    .returns(String)
+  end
+  def self.pbkdf2_hmac(pass, salt:, iterations:, length:, hash:); end
+
+  sig do
+    params(
+      pass: String,
+      kwargs: T.untyped
+    )
+    .returns(String)
+  end
+  def self.scrypt(pass, **kwargs); end
+
+  sig do
+      params(
+        ikm: String,
+        salt: String,
+        info: String,
+        length: Integer,
+        hash: T.any(String, OpenSSL::Digest)
+      )
+      .returns(String)
+    end
+    def self.hkdf(ikm, salt:, info:, length:, hash:); end
+end
+
+class OpenSSL::KDF::KDFError < OpenSSL::OpenSSLError
+end
+
 class OpenSSL::Digest::MD2 < OpenSSL::Digest
   sig do
     params(
