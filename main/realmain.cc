@@ -397,7 +397,7 @@ void runAutogen(const core::GlobalState &gs, options::Options &opts, const autog
         for (const auto &it : processedGlobalDSLInfo) {
             autogen::printName(out, it.first, gs);
             fmt::format_to(std::back_inserter(out), "{}\n", ":");
-            it.second.formatString(out, gs);
+            it.second.formatString(out, it.first, gs);
         }
 
         opts.print.DSLAnalysis.fmt("{}", to_string(out));
