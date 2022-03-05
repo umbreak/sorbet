@@ -192,7 +192,7 @@ struct Intrinsic {
     const NameRef method;
     const IntrinsicMethod *impl;
 };
-extern const std::vector<Intrinsic> intrinsicMethods;
+absl::Span<const Intrinsic> intrinsicMethods();
 
 template <class To> bool isa_type(const TypePtr &what) {
     return what != nullptr && what.tag() == TypePtr::TypeToTag<To>::value;
