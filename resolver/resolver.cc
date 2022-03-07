@@ -1356,7 +1356,7 @@ public:
         }
 
         const auto &precedingSymKlass = precedingSymForCurDef.asClassOrModuleRef().data(ctx);
-        if (!precedingSymKlass->isClassOrModuleUndeclared()) {
+        if (!precedingSymKlass->flags.isUndeclared) {
             // Not a filler def, but a real def
             return defaultSymbol;
         }
