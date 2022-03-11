@@ -531,6 +531,7 @@ public:
     SymbolRef findMemberNoDealias(const GlobalState &gs, NameRef name) const;
     MethodRef findMethodNoDealias(const GlobalState &gs, NameRef name) const;
     SymbolRef findMemberTransitive(const GlobalState &gs, NameRef name) const;
+    SymbolRef findMemberTransitiveNoDealias(const GlobalState &gs, NameRef name) const;
     MethodRef findMethodTransitive(const GlobalState &gs, NameRef name) const;
     MethodRef findConcreteMethodTransitive(const GlobalState &gs, NameRef name) const;
 
@@ -658,7 +659,7 @@ private:
     std::vector<RequiredAncestor> requiredAncestorsTransitiveInternal(GlobalState &gs,
                                                                       std::vector<ClassOrModuleRef> &seen);
 
-    SymbolRef findMemberTransitiveInternal(const GlobalState &gs, NameRef name, int maxDepth = 100) const;
+    SymbolRef findMemberTransitiveInternal(const GlobalState &gs, NameRef name, int maxDepth, bool dealias) const;
 
     inline void unsetClassOrModuleLinearizationComputed() {
         ENFORCE(isClassOrModule());
