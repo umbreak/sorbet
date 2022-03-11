@@ -201,6 +201,9 @@ unique_ptr<Error> matchArgType(const GlobalState &gs, TypeConstraint &constr, Lo
     expectedType = Types::replaceSelfType(gs, expectedType, selfType);
 
     if (Types::isSubTypeUnderConstraint(gs, constr, argTpe.type, expectedType, UntypedMode::AlwaysCompatible)) {
+        // if (method.data(gs)->name.shortName(gs) == "refute_nil") {
+        //     fmt::print(stderr, "{}\n", constr.toString(gs));
+        // }
         return nullptr;
     }
 
@@ -547,6 +550,9 @@ const ShapeType *fromKwargsHash(const GlobalState &gs, const TypePtr &ty) {
 //    (with a subtype check on the key type, once we have generics)
 DispatchResult dispatchCallSymbol(const GlobalState &gs, const DispatchArgs &args, core::ClassOrModuleRef symbol,
                                   const vector<TypePtr> &targs) {
+    if (args.name.shortName(gs) == "refute_nil") {
+        stopInDebugger();
+    }
     if (symbol == core::Symbols::untyped()) {
         return DispatchResult(Types::untyped(gs, args.thisType.untypedBlame()), std::move(args.selfType),
                               Symbols::noMethod());

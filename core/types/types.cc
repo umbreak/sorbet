@@ -572,10 +572,6 @@ bool Types::isAsSpecificAs(const GlobalState &gs, const TypePtr &t1, const TypeP
     return isSubTypeUnderConstraint(gs, TypeConstraint::EmptyFrozenConstraint, t1, t2, UntypedMode::AlwaysIncompatible);
 }
 
-bool Types::isSubType(const GlobalState &gs, const TypePtr &t1, const TypePtr &t2) {
-    return isSubTypeUnderConstraint(gs, TypeConstraint::EmptyFrozenConstraint, t1, t2, UntypedMode::AlwaysCompatible);
-}
-
 bool ClassType::derivesFrom(const GlobalState &gs, ClassOrModuleRef klass) const {
     if (symbol == Symbols::untyped() || symbol == klass) {
         return true;
